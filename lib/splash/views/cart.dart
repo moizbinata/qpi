@@ -36,17 +36,18 @@ class _CartState extends State<Cart> {
   List<dynamic> _placeList = [];
 
   GetStorage box = GetStorage();
+  var addressContr = TextEditingController();
 
-  TextEditingController addressContr = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
-
-    addressContr.text = box.read('address').toString();
     super.initState();
     addressContr.addListener(() {
-      getSuggestion(addressContr.text);
+      _onChanged();
     });
+  }
+
+  _onChanged() {
+    getSuggestion(addressContr.text);
   }
 
   void getSuggestion(String input) async {
@@ -120,84 +121,79 @@ class _CartState extends State<Cart> {
                     title: regularText("My Cart", 3.0, Constants.primaryColor,
                         FontWeight.bold, 0),
                   ),
-                  regularText(
-                      "Address: ", 2.0, Constants.grey, FontWeight.bold, 0),
-
-                  Row(
-                    children: [
-                      Icon(Icons.pin_drop),
-                      TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: regularText(
-                                      "Search Location",
-                                      2.0,
-                                      Constants.primaryColor,
-                                      FontWeight.normal,
-                                      0),
-                                  content: SizedBox(
-                                    height: SizeConfig.screenHeight *
-                                        0.5, // Change as per your requirement
-                                    width: SizeConfig.screenWidth *
-                                        0.9, // Change as per your requirement
-                                    child: Column(
-                                      children: [
-                                        TextField(
-                                          controller: addressContr,
-                                          decoration: InputDecoration(
-                                            hintText: "Seek your location here",
-                                            focusColor: Colors.white,
-                                            floatingLabelBehavior:
-                                                FloatingLabelBehavior.never,
-                                            prefixIcon: Icon(Icons.map),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(Icons.cancel),
-                                              onPressed: () {
-                                                addressContr.clear();
-                                              },
-                                            ),
-                                          ),
+                  regularText("Delivery Address", 1.9, Constants.grey,
+                      FontWeight.normal, 0),
+                  TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              title: regularText("Search Location", 2.0,
+                                  Constants.primaryColor, FontWeight.normal, 0),
+                              content: SizedBox(
+                                height: SizeConfig.screenHeight *
+                                    0.9, // Change as per your requirement
+                                width: SizeConfig.screenWidth *
+                                    0.9, // Change as per your requirement
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: addressContr,
+                                      decoration: InputDecoration(
+                                        hintText: "Seek your location here",
+                                        focusColor: Colors.white,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        prefixIcon: Icon(Icons.map),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(Icons.cancel),
+                                          onPressed: () {
+                                            addressContr.clear();
+                                          },
                                         ),
-                                        SizedBox(
-                                          height: SizeConfig.screenHeight * 0.3,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            shrinkWrap: true,
-                                            itemCount: _placeList.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return ListTile(
-                                                onTap: () {
-                                                  addressContr.text =
-                                                      _placeList[index]
-                                                              ["description"]
-                                                          .toString();
-                                                },
-                                                title: Text(_placeList[index]
-                                                    ["description"]),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
+                                      ),
+                                      onChanged: (value) {
+                                        getSuggestion(value);
+                                      },
                                     ),
-                                  ));
-                            },
-                          );
+                                    SizedBox(
+                                      height: SizeConfig.screenHeight * 0.5,
+                                      child: SingleChildScrollView(
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: _placeList.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return ListTile(
+                                              onTap: () {
+                                                addressContr.text =
+                                                    _placeList[index]
+                                                            ["description"]
+                                                        .toString();
+                                              },
+                                              title: Text(_placeList[index]
+                                                  ["description"]),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ));
                         },
-                        child: regularText(
-                          addressContr.text.toString() ?? "Search Location",
-                          2.0,
-                          Constants.primaryColor,
-                          FontWeight.normal,
-                          0,
-                        ),
-                      ),
-                    ],
+                      );
+                    },
+                    child: regularText(
+                      addressContr.text.toString(),
+                      2.0,
+                      Constants.primaryColor,
+                      FontWeight.normal,
+                      0,
+                    ),
                   ),
+
                   CarouselSlider.builder(
                     itemCount: Constants.banImgs.length,
                     options: CarouselOptions(
@@ -729,21 +725,23 @@ class _CartState extends State<Cart> {
                   ),
                 ),
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: _placeList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () async {
-                      addressContr.text =
-                          _placeList[index]["description"].toString();
-                    },
-                    child: ListTile(
-                      title: Text(_placeList[index]["description"]),
-                    ),
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _placeList.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        addressContr.text =
+                            _placeList[index]["description"].toString();
+                      },
+                      child: ListTile(
+                        title: Text(_placeList[index]["description"]),
+                      ),
+                    );
+                  },
+                ),
               )
             ],
           ),
