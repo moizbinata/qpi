@@ -1,0 +1,4 @@
+#Fri May 06 13:05:38 PKT 2022
+base.0=F\:\\Upwork\\qpi\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

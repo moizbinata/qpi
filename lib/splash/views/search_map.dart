@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:qpi/components/components.dart';
+import 'package:qpi/utils/constants.dart';
+import 'package:qpi/utils/size_config.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,6 +27,7 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
     });
   }
 
+  GetStorage box = GetStorage();
   _onChanged() {
     if (_sessionToken == null) {
       setState(() {
@@ -61,10 +66,32 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          'Google Map Search places Api',
-        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.chevron_left,
+              color: Constants.primaryColor,
+              size: SizeConfig.textMultiplier * 4,
+            )),
+        title: regularText(
+            "Search Location", 2.1, Constants.primaryColor, FontWeight.bold, 1),
+        actions: [
+          Container(
+            margin: EdgeInsets.all(SizeConfig.heightMultiplier * 1),
+            child: ElevatedButton(
+              onPressed: () {
+                box.write('address2', _controller.text.toString());
+                Navigator.pop(context);
+              },
+              child:
+                  regularText("Done", 1.9, Colors.white, FontWeight.normal, 1),
+            ),
+          )
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

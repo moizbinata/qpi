@@ -15,9 +15,13 @@ import 'package:qpi/controller/cart_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
 import 'package:qpi/splash/views/home.dart';
 import 'package:qpi/splash/views/payment.dart';
+import 'package:qpi/splash/views/search_map.dart';
 import 'package:qpi/utils/constants.dart';
 import 'package:qpi/utils/services.dart';
 import 'package:qpi/utils/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+enum SingingCharacter { clock, urgent }
 
 // ignore: must_be_immutable
 class Cart extends StatefulWidget {
@@ -28,53 +32,24 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  SingingCharacter _character = SingingCharacter.clock;
   List<String> days = ["S", "M", "T", "W", "T", "F", "S"];
   DateTime selectedDate = DateTime.now();
   CartController cartController = CartController();
   TimeOfDay selectedTime = TimeOfDay.now();
   int activeIndex = 0;
-  List<dynamic> _placeList = [];
+  int _groupValue = -1;
 
   GetStorage box = GetStorage();
-  var addressContr = TextEditingController();
+// Initial Selected Value
+  String dropdownvalue = '15 Mins';
 
-  @override
-  void initState() {
-    super.initState();
-    addressContr.addListener(() {
-      _onChanged();
-    });
-  }
-
-  _onChanged() {
-    getSuggestion(addressContr.text);
-  }
-
-  void getSuggestion(String input) async {
-    String kPLACES_API_KEY = "your api";
-    String type = '(regions)';
-
-    try {
-      String baseURL =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-      String request =
-          '$baseURL?input=$input&key=AIzaSyDuVgdpLJJDl1H-irTSFsg9OsrNoJnpjRM';
-      var response = await http.get(Uri.parse(request));
-      var data = json.decode(response.body);
-      print('mydata');
-      print(data);
-      if (response.statusCode == 200) {
-        setState(() {
-          _placeList = json.decode(response.body)['predictions'];
-        });
-      } else {
-        throw Exception('Failed to load predictions');
-      }
-    } catch (e) {
-      // toastMessage('success');
-    }
-  }
-
+  // List of items in our dropdown menu
+  var items = [
+    '15 Mins',
+    '30 Mins',
+    '45 Mins',
+  ];
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CartController());
@@ -125,68 +100,14 @@ class _CartState extends State<Cart> {
                       FontWeight.normal, 0),
                   TextButton(
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              title: regularText("Search Location", 2.0,
-                                  Constants.primaryColor, FontWeight.normal, 0),
-                              content: SizedBox(
-                                height: SizeConfig.screenHeight *
-                                    0.9, // Change as per your requirement
-                                width: SizeConfig.screenWidth *
-                                    0.9, // Change as per your requirement
-                                child: Column(
-                                  children: [
-                                    TextField(
-                                      controller: addressContr,
-                                      decoration: InputDecoration(
-                                        hintText: "Seek your location here",
-                                        focusColor: Colors.white,
-                                        floatingLabelBehavior:
-                                            FloatingLabelBehavior.never,
-                                        prefixIcon: Icon(Icons.map),
-                                        suffixIcon: IconButton(
-                                          icon: Icon(Icons.cancel),
-                                          onPressed: () {
-                                            addressContr.clear();
-                                          },
-                                        ),
-                                      ),
-                                      onChanged: (value) {
-                                        getSuggestion(value);
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: SizeConfig.screenHeight * 0.5,
-                                      child: SingleChildScrollView(
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: _placeList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return ListTile(
-                                              onTap: () {
-                                                addressContr.text =
-                                                    _placeList[index]
-                                                            ["description"]
-                                                        .toString();
-                                              },
-                                              title: Text(_placeList[index]
-                                                  ["description"]),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ));
-                        },
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GoogleSearchPlacesApi(),
+                          ));
                     },
                     child: regularText(
-                      addressContr.text.toString(),
+                      box.read('address2').toString(),
                       2.0,
                       Constants.primaryColor,
                       FontWeight.normal,
@@ -242,7 +163,7 @@ class _CartState extends State<Cart> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       regularText(
-                        "Delivery On/From",
+                        "Delivery Date",
                         1.9,
                         Constants.primaryColor,
                         FontWeight.normal,
@@ -277,37 +198,122 @@ class _CartState extends State<Cart> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      regularText(
-                        "Delivery Time",
-                        1.9,
-                        Constants.primaryColor,
-                        FontWeight.normal,
-                        0,
-                      ),
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              _selectTime(context);
+                      Expanded(
+                        flex: 2,
+                        child: SizedBox(
+                          height: SizeConfig.heightMultiplier * 2.7,
+                          child: Radio<SingingCharacter>(
+                            value: SingingCharacter.clock,
+                            groupValue: _character,
+                            onChanged: (SingingCharacter value) {
+                              setState(() {
+                                _character = value;
+                              });
                             },
-                            child: regularText(
-                                "${selectedTime.hour}:${selectedTime.minute}",
-                                2.0,
-                                Constants.primaryColor,
-                                FontWeight.bold,
-                                0),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          FaIcon(
-                            FontAwesomeIcons.clock,
-                            size: SizeConfig.textMultiplier * 2.5,
-                          ),
-                        ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: regularText(
+                          "Delivery Time",
+                          1.9,
+                          Constants.primaryColor,
+                          FontWeight.normal,
+                          0,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _selectTime(context);
+                              },
+                              child: regularText(
+                                  "${selectedTime.hour}:${selectedTime.minute}",
+                                  2.0,
+                                  Constants.primaryColor,
+                                  FontWeight.bold,
+                                  0),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            FaIcon(
+                              FontAwesomeIcons.clock,
+                              size: SizeConfig.textMultiplier * 2.5,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: SizedBox(
+                          height: SizeConfig.heightMultiplier * 2.7,
+                          child: Radio<SingingCharacter>(
+                            value: SingingCharacter.urgent,
+                            groupValue: _character,
+                            onChanged: (SingingCharacter value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: regularText(
+                          "Urgent Delivery",
+                          1.9,
+                          Constants.primaryColor,
+                          FontWeight.normal,
+                          0,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: SizedBox(
+                          height: SizeConfig.heightMultiplier * 3,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: DropdownButton(
+                              // Initial Value
+                              value: dropdownvalue,
+
+                              // Down Arrow Icon
+                              icon: const Icon(Icons.keyboard_arrow_down),
+
+                              // Array list of items
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  dropdownvalue = newValue;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   spaces(),
                   regularText("Order Details: ", 2.0, Constants.grey,
                       FontWeight.bold, 0),
@@ -473,18 +479,13 @@ class _CartState extends State<Cart> {
                         //     ));
                         box.write('timeslot',
                             "${selectedTime.hour}:${selectedTime.minute}");
-                        box.write('address2', addressContr.text.toString());
+                        print(box.read('address2'));
                         box.write('dateslot',
                             "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}");
 
                         ApiServices apiServices = ApiServices();
                         await apiServices.postOrder();
-                        if (box.read('orderid') != null) {
-                          // Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => PaymentScreen(),
-                          //     ));
+                        if (controller.cart.call().cartItem.isNotEmpty) {
                           modalforCheckout(
                               controller.cart
                                   .call()
@@ -496,7 +497,7 @@ class _CartState extends State<Cart> {
                               box.read('orderid').toString());
                         } else {
                           print("not called");
-                          Fluttertoast.showToast(msg: 'Something went wrong');
+                          Fluttertoast.showToast(msg: 'First Order Please');
                         }
                       },
                       child: Container(
@@ -616,9 +617,9 @@ class _CartState extends State<Cart> {
               spaces(),
               Row(
                 children: [
-                  regularText("For you we make  ", 2.4, Constants.green,
-                      FontWeight.bold, 0),
-                  regularText("ordering easy", 2.4, Constants.primaryColor,
+                  regularText(
+                      "Thanks ", 2.4, Constants.green, FontWeight.bold, 0),
+                  regularText("for order", 2.4, Constants.primaryColor,
                       FontWeight.bold, 0),
                 ],
               ),
@@ -667,27 +668,17 @@ class _CartState extends State<Cart> {
                           borderRadius: BorderRadius.circular(30.0),
                           side: BorderSide(color: Constants.primaryColor)),
                     ),
-                    onPressed: () {
-                      print(totalAmount * 100);
+                    onPressed: () async {
                       print(orderId);
+                      await launchUrl(Uri.parse(
+                          'http://qpifoods.com/mystore/razorpay/paymainindex.php?mobile=${box.read('mobile')}&bkamt=$totalAmount&bookid-$orderId&custname=${box.read('username')}'));
+                      print(
+                          'http://qpifoods.com/mystore/razorpay/paymainindex.php?mobile=${box.read('mobile')}&bkamt=$totalAmount&bookid-$orderId&custname=${box.read('username')}');
                       Navigator.pop(context);
-                      var options = {
-                        'key':
-                            'pnB3aVf5OtXziipl7bFgr5KR', //pnB3aVf5OtXziipl7bFgr5KR   KEYSECRET
-                        'amount': 1000, //totalAmount * 100,
-                        'name': 'Qpi',
-                        'order_id': "$orderId",
-                        'description': 'Qpi Order',
-                        'timeout': 300,
-                        'prefill': {
-                          'contact': '9066545279', // box.read('mobile'),
-                          'email': 'abc@gmail.com', //box.read('email'),
-                        }
-                      };
                       cartController.cart.call().deleteAllCart();
                     },
-                    child: regularText("Razorpay", 2.1, Constants.primaryColor,
-                        FontWeight.bold, 1),
+                    child: regularText("Pay Online", 2.1,
+                        Constants.primaryColor, FontWeight.bold, 1),
                   ),
                 ],
               ),
@@ -695,58 +686,6 @@ class _CartState extends State<Cart> {
           ),
         ),
       ),
-    );
-  }
-
-  showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: regularText("Search Location", 2.0, Constants.primaryColor,
-              FontWeight.normal, 0),
-          content: Column(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: TextField(
-                  controller: addressContr,
-                  decoration: InputDecoration(
-                    hintText: "Seek your location here",
-                    focusColor: Colors.white,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    prefixIcon: Icon(Icons.map),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.cancel),
-                      onPressed: () {
-                        addressContr.clear();
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: _placeList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        addressContr.text =
-                            _placeList[index]["description"].toString();
-                      },
-                      child: ListTile(
-                        title: Text(_placeList[index]["description"]),
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        );
-      },
     );
   }
 }

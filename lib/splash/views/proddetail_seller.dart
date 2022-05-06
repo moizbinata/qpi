@@ -114,12 +114,8 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: regularText(
-                              "Description: " + widget.selProd.proddesc,
-                              2.0,
-                              Constants.grey,
-                              FontWeight.bold,
-                              0),
+                          child: regularText(widget.selProd.proddesc, 2.0,
+                              Constants.grey, FontWeight.bold, 1),
                         )
                       ],
                     ),

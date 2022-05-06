@@ -25,15 +25,6 @@ class Menu extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GoogleSearchPlacesApi(),
-                          ));
-                    },
-                    child: Text("map")),
                 Image.asset(
                   'assets/img/logo4.png',
                   height: SizeConfig.heightMultiplier * 15,

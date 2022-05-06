@@ -89,7 +89,7 @@ class ApiServices {
     // {%22pid%22:%222830%22,%22pname%22:%22Sausages%22,%22price%22:%22110%22,%22quan%22:%225%22,%20%22ptype%22:%22order%22}]
 
     String postUrl =
-        "https://www.qpifoods.com/mystore/jatpat_store_bill.php?custname=${box.read('username')}&mobile=${box.read('mobile')}&addr=${box.read('address')}&payamt=${prodController.getCartTotalAmount().toStringAsFixed(2)}&paystatus=Done&deldate=${box.read('dateslot')}&deltime=${box.read('timeslot')}&email=${box.read('email')}&all_arraylist=" +
+        "https://www.qpifoods.com/mystore/jatpat_store_bill.php?custname=${box.read('username')}&mobile=${box.read('mobile')}&addr=${box.read('address2')}&payamt=${prodController.getCartTotalAmount().toStringAsFixed(2)}&paystatus=Done&deldate=${box.read('dateslot')}&deltime=${box.read('timeslot')}&email=${box.read('email')}&all_arraylist=" +
             orderJson.toString();
     var response = await client.get(Uri.parse(postUrl));
     print(postUrl);
