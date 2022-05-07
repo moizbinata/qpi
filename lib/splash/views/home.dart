@@ -4,6 +4,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:qpi/components/components.dart';
 import 'package:qpi/controller/cart_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
+import 'package:qpi/navigation/bottom_navigator.dart';
+import 'package:qpi/navigation/tab_navigator.dart';
 import 'package:qpi/splash/views/cart.dart';
 import 'package:qpi/splash/views/prodDetail.dart';
 import 'package:qpi/splash/views/proddetail_seller.dart';
@@ -30,6 +32,7 @@ class _HomeState extends State<Home> {
 
   GetStorage box = GetStorage();
   int activeIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
@@ -241,12 +244,16 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       spaces(),
-                      ListTile(
-                        onTap: () {},
-                        leading: regularText("Product by category", 2.4,
-                            Constants.grey, FontWeight.bold, 0),
-                        trailing: Icon(Icons.chevron_right_outlined),
-                      ),
+                      // ListTile(
+                      //   onTap: () {
+                      //     TabNavigator(
+                      //       tabItem: "Subscription",
+                      //     );
+                      //   },
+                      //   leading: regularText("Product by category", 2.4,
+                      //       Constants.grey, FontWeight.bold, 0),
+                      //   trailing: Icon(Icons.chevron_right_outlined),
+                      // ),
                       // spaces(),
                       Container(
                         margin: EdgeInsets.only(
@@ -544,6 +551,7 @@ class _HomeState extends State<Home> {
                       ),
                       spaces(),
                       //seventh two
+
                       GridView.builder(
                         itemCount: controller.prodList.length - 24,
                         physics: NeverScrollableScrollPhysics(),
@@ -609,6 +617,8 @@ class _HomeState extends State<Home> {
 }
 
 Widget productBox(url, name, price, prodId, category) {
+  GetStorage box = GetStorage();
+
   return Container(
     // clipBehavior: Clip.hardEdge,
     margin: EdgeInsets.symmetric(
@@ -659,8 +669,12 @@ Widget productBox(url, name, price, prodId, category) {
                     CartController cartController = CartController();
                     await cartController.cart.call().addToCart(
                         productId: int.tryParse(prodId),
-                        unitPrice: int.tryParse(price),
-                        quantity: 1,
+                        unitPrice: (box.read('cusType').toString() == "Seller")
+                            ? int.tryParse(price) * 5
+                            : int.tryParse(price),
+                        quantity: (box.read('cusType').toString() == "Seller")
+                            ? 5
+                            : 1,
                         productDetailsObject: category,
                         productName: name,
                         uniqueCheck: "");

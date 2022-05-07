@@ -92,6 +92,46 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                 ),
                 title: regularText("Product Detail", 3.0,
                     Constants.primaryColor, FontWeight.bold, 0),
+                trailing: InkWell(
+                    onTap: () async {
+                      int subtotalPrice = 0;
+                      subtotalPrice = totalPrice;
+
+                      await controller.cart.call().addToCart(
+                            productId: int.tryParse(widget.selProd.productid),
+                            unitPrice: totalPrice,
+                            // int.tryParse(widget.selProd.price),
+
+                            quantity: totalProd,
+                            productDetailsObject: widget.selProd.category,
+                            productName: widget.selProd.servicename,
+                            uniqueCheck: (_groupValue == 0)
+                                ? ""
+                                : daysBool.toString() + "//" + weeks.toString(),
+                          );
+                      print(daysBool.toString() + "//" + weeks.toString());
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Cart(),
+                          ));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.heightMultiplier * 1,
+                          horizontal: SizeConfig.heightMultiplier * 2),
+                      margin: EdgeInsets.only(
+                          right: SizeConfig.heightMultiplier * 1),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // border: Border.all(
+                          //   color: Constants.primaryColor,
+                          //   width: 2,
+                          // ),
+                          color: Constants.primaryColor),
+                      child: regularText(
+                          "Add to Cart", 2.0, Colors.white, FontWeight.bold, 1),
+                    )),
               ),
               Container(
                 padding: EdgeInsets.symmetric(
@@ -232,7 +272,6 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                         )
                       ],
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -257,7 +296,6 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                       ],
                     ),
                     spaces(),
-
                     AbsorbPointer(
                       absorbing: (_groupValue == 0) ? true : false,
                       child: Container(
@@ -326,52 +364,6 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                               ],
                             ),
                             spaces(),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     regularText(
-                            //       (_groupValue == 1)
-                            //           ? "Delivery Time"
-                            //           : "DISABLED",
-                            //       1.9,
-                            //       Constants.primaryColor,
-                            //       FontWeight.normal,
-                            //       0,
-                            //     ),
-                            //     SizedBox(),
-                            //     DropdownButton(
-                            //       // Initial Value
-                            //       value: timeslot,
-                            //       // Down Arrow Icon
-                            //       icon: const Icon(
-                            //         Icons.keyboard_arrow_down,
-                            //       ),
-                            //       alignment: Alignment.centerRight,
-                            //       // Array list of items
-                            //       items: timeslotList.map((String items) {
-                            //         return DropdownMenuItem(
-                            //           value: items,
-                            //           child: regularText(
-                            //               items,
-                            //               1.8,
-                            //               Constants.primaryColor,
-                            //               FontWeight.w600,
-                            //               0),
-                            //         );
-                            //       }).toList(),
-                            //       // After selecting the desired option,it will
-                            //       // change button value to selected value
-                            //       onChanged: (String newValue) {
-                            //         setState(() {
-                            //           timeslot = newValue;
-                            //         });
-                            //         print(timeslot);
-                            //       },
-                            //     ),
-                            //     SizedBox(),
-                            //   ],
-                            // ),
-                            spaces(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -422,71 +414,12 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                                         0),
                                   ],
                                 ),
-                                SizedBox(),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    spaces(),
-                    InkWell(
-                        onTap: () async {
-                          int subtotalPrice = 0;
-                          subtotalPrice = totalPrice;
-
-                          await controller.cart.call().addToCart(
-                                productId:
-                                    int.tryParse(widget.selProd.productid),
-                                unitPrice: totalPrice,
-                                // int.tryParse(widget.selProd.price),
-
-                                quantity: totalProd,
-                                productDetailsObject: widget.selProd.category,
-                                productName: widget.selProd.servicename,
-                                uniqueCheck: (_groupValue == 0)
-                                    ? ""
-                                    : daysBool.toString() +
-                                        "//" +
-                                        weeks.toString(),
-                              );
-                          print(daysBool.toString() + "//" + weeks.toString());
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Cart(),
-                              ));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: SizeConfig.heightMultiplier * 1.5),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              // border: Border.all(
-                              //   color: Constants.primaryColor,
-                              //   width: 2,
-                              // ),
-                              color: Constants.primaryColor),
-                          child: regularText("Proceed to Order", 2.0,
-                              Colors.white, FontWeight.bold, 1),
-                        )),
-                    // spaces(),
-                    // InkWell(
-                    //     child: Container(
-                    //   padding: EdgeInsets.symmetric(
-                    //       vertical: SizeConfig.heightMultiplier * 1.5),
-                    //   width: double.infinity,
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(20),
-                    //       border: Border.all(
-                    //         color: Constants.primaryColor,
-                    //         width: 2,
-                    //       ),
-                    //       color: Colors.white),
-                    //   child: regularText("Add to Subscription", 2.0,
-                    //       Constants.primaryColor, FontWeight.bold, 1),
-                    // )),
                   ],
                 ),
               ),

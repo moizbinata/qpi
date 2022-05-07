@@ -65,6 +65,61 @@ class _ProdDetailState extends State<ProdDetail> {
                 ),
                 title: regularText("Product Detail", 3.0,
                     Constants.primaryColor, FontWeight.bold, 0),
+                trailing: InkWell(
+                    onTap: () async {
+                      int subtotalPrice = 0;
+                      subtotalPrice = (_groupValue == 0)
+                          ? (int.tryParse(widget.selProd.price) * totalProd)
+                          : (num_days > 1 || weeks > 1)
+                              ? ((int.tryParse(widget.selProd.price) *
+                                      totalProd) *
+                                  (num_days * weeks))
+                              : (int.tryParse(widget.selProd.price) *
+                                  totalProd);
+
+                      await controller.cart.call().addToCart(
+                            productId: int.tryParse(widget.selProd.productid),
+                            unitPrice: subtotalPrice,
+                            // int.tryParse(widget.selProd.price),
+
+                            quantity: totalProd,
+                            productDetailsObject: widget.selProd.category,
+                            productName: widget.selProd.servicename,
+                            uniqueCheck: (_groupValue == 0)
+                                ? ""
+                                : daysBool.toString() +
+                                    // "//" +
+                                    // timeslot +
+                                    "//" +
+                                    weeks.toString(),
+                          );
+                      print(daysBool.toString() +
+                          // "//" +
+                          // timeslot +
+                          "//" +
+                          weeks.toString());
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Cart(),
+                          ));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.heightMultiplier * 1,
+                          horizontal: SizeConfig.heightMultiplier * 2),
+                      margin: EdgeInsets.only(
+                          right: SizeConfig.heightMultiplier * 1),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // border: Border.all(
+                          //   color: Constants.primaryColor,
+                          //   width: 2,
+                          // ),
+                          color: Constants.primaryColor),
+                      child: regularText(
+                          "Add to Cart", 2.0, Colors.white, FontWeight.bold, 1),
+                    )),
               ),
               Container(
                 padding: EdgeInsets.symmetric(
@@ -122,21 +177,27 @@ class _ProdDetailState extends State<ProdDetail> {
                                     FontWeight.bold, 0),
                                 IconButton(
                                     onPressed: () {
-                                      if (totalProd == 1)
+                                      if (totalProd == 1) {
                                         setState(() {
                                           totalProd = 1;
                                         });
-                                      else if (totalProd > 1)
+                                      } else if (totalProd > 1) {
                                         setState(() {
                                           totalProd--;
                                         });
+                                      }
                                     },
                                     icon: FaIcon(
                                       FontAwesomeIcons.minus,
                                       size: SizeConfig.textMultiplier * 2,
                                     )),
-                                regularText(totalProd.toString(), 2.1,
-                                    Constants.grey, FontWeight.bold, 1),
+                                regularText(
+                                  totalProd.toString(),
+                                  2.1,
+                                  Constants.grey,
+                                  FontWeight.bold,
+                                  1,
+                                ),
                                 IconButton(
                                     onPressed: () {
                                       setState(() {
@@ -259,17 +320,14 @@ class _ProdDetailState extends State<ProdDetail> {
                                           daysBool[i] = !daysBool[i];
                                         });
                                         num_days = 0;
-                                        daysBool.forEach((element) {
-                                          if (element == true)
+                                        for (var element in daysBool) {
+                                          if (element == true) {
                                             setState(() {
                                               num_days++;
                                             });
-                                          ;
-                                        });
+                                          }
+                                        }
                                         print(num_days);
-                                        // setState(() {
-
-                                        // });
                                       },
                                       child: CircleAvatar(
                                           radius:
@@ -290,52 +348,6 @@ class _ProdDetailState extends State<ProdDetail> {
                               ],
                             ),
                             spaces(),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     regularText(
-                            //       (_groupValue == 1)
-                            //           ? "Delivery Time"
-                            //           : "DISABLED",
-                            //       1.9,
-                            //       Constants.primaryColor,
-                            //       FontWeight.normal,
-                            //       0,
-                            //     ),
-                            //     SizedBox(),
-                            //     DropdownButton(
-                            //       // Initial Value
-                            //       value: timeslot,
-                            //       // Down Arrow Icon
-                            //       icon: const Icon(
-                            //         Icons.keyboard_arrow_down,
-                            //       ),
-                            //       alignment: Alignment.centerRight,
-                            //       // Array list of items
-                            //       items: timeslotList.map((String items) {
-                            //         return DropdownMenuItem(
-                            //           value: items,
-                            //           child: regularText(
-                            //               items,
-                            //               1.8,
-                            //               Constants.primaryColor,
-                            //               FontWeight.w600,
-                            //               0),
-                            //         );
-                            //       }).toList(),
-                            //       // After selecting the desired option,it will
-                            //       // change button value to selected value
-                            //       onChanged: (String newValue) {
-                            //         setState(() {
-                            //           timeslot = newValue;
-                            //         });
-                            //         print(timeslot);
-                            //       },
-                            //     ),
-                            //     SizedBox(),
-                            //   ],
-                            // ),
-                            // spaces(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -393,60 +405,61 @@ class _ProdDetailState extends State<ProdDetail> {
                       ),
                     ),
                     spaces(),
-                    InkWell(
-                        onTap: () async {
-                          int subtotalPrice = 0;
-                          subtotalPrice = (_groupValue == 0)
-                              ? (int.tryParse(widget.selProd.price) * totalProd)
-                              : (num_days > 1 || weeks > 1)
-                                  ? ((int.tryParse(widget.selProd.price) *
-                                          totalProd) *
-                                      (num_days * weeks))
-                                  : (int.tryParse(widget.selProd.price) *
-                                      totalProd);
+                    // InkWell(
+                    //     onTap: () async {
+                    //       int subtotalPrice = 0;
+                    //       subtotalPrice = (_groupValue == 0)
+                    //           ? (int.tryParse(widget.selProd.price) * totalProd)
+                    //           : (num_days > 1 || weeks > 1)
+                    //               ? ((int.tryParse(widget.selProd.price) *
+                    //                       totalProd) *
+                    //                   (num_days * weeks))
+                    //               : (int.tryParse(widget.selProd.price) *
+                    //                   totalProd);
 
-                          await controller.cart.call().addToCart(
-                                productId:
-                                    int.tryParse(widget.selProd.productid),
-                                unitPrice: subtotalPrice,
-                                // int.tryParse(widget.selProd.price),
+                    //       await controller.cart.call().addToCart(
+                    //             productId:
+                    //                 int.tryParse(widget.selProd.productid),
+                    //             unitPrice: subtotalPrice,
+                    //             // int.tryParse(widget.selProd.price),
 
-                                quantity: totalProd,
-                                productDetailsObject: widget.selProd.category,
-                                productName: widget.selProd.servicename,
-                                uniqueCheck: (_groupValue == 0)
-                                    ? ""
-                                    : daysBool.toString() +
-                                        // "//" +
-                                        // timeslot +
-                                        "//" +
-                                        weeks.toString(),
-                              );
-                          print(daysBool.toString() +
-                              // "//" +
-                              // timeslot +
-                              "//" +
-                              weeks.toString());
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Cart(),
-                              ));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: SizeConfig.heightMultiplier * 1.5),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              // border: Border.all(
-                              //   color: Constants.primaryColor,
-                              //   width: 2,
-                              // ),
-                              color: Constants.primaryColor),
-                          child: regularText("Proceed to Order", 2.0,
-                              Colors.white, FontWeight.bold, 1),
-                        )),
+                    //             quantity: totalProd,
+                    //             productDetailsObject: widget.selProd.category,
+                    //             productName: widget.selProd.servicename,
+                    //             uniqueCheck: (_groupValue == 0)
+                    //                 ? ""
+                    //                 : daysBool.toString() +
+                    //                     // "//" +
+                    //                     // timeslot +
+                    //                     "//" +
+                    //                     weeks.toString(),
+                    //           );
+                    //       print(daysBool.toString() +
+                    //           // "//" +
+                    //           // timeslot +
+                    //           "//" +
+                    //           weeks.toString());
+                    //       Navigator.pushReplacement(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //             builder: (context) => Cart(),
+                    //           ));
+                    //     },
+                    //     child: Container(
+                    //       padding: EdgeInsets.symmetric(
+                    //           vertical: SizeConfig.heightMultiplier * 1.5),
+                    //       width: double.infinity,
+                    //       decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(20),
+                    //           // border: Border.all(
+                    //           //   color: Constants.primaryColor,
+                    //           //   width: 2,
+                    //           // ),
+                    //           color: Constants.primaryColor),
+                    //       child: regularText("Proceed to Order", 2.0,
+                    //           Colors.white, FontWeight.bold, 1),
+                    //     )
+                    //     ),
                     // spaces(),
                     // InkWell(
                     //     child: Container(

@@ -101,7 +101,7 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
             child: TextField(
               controller: _controller,
               decoration: InputDecoration(
-                hintText: "Seek your location here",
+                hintText: "Search location",
                 focusColor: Colors.white,
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 prefixIcon: Icon(Icons.map),

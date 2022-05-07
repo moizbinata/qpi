@@ -15,6 +15,8 @@ import 'package:qpi/controller/cart_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
 import 'package:qpi/splash/views/home.dart';
 import 'package:qpi/splash/views/payment.dart';
+import 'package:qpi/splash/views/prodDetail.dart';
+import 'package:qpi/splash/views/proddetail_seller.dart';
 import 'package:qpi/splash/views/search_map.dart';
 import 'package:qpi/utils/constants.dart';
 import 'package:qpi/utils/services.dart';
@@ -34,6 +36,7 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   SingingCharacter _character = SingingCharacter.clock;
   List<String> days = ["S", "M", "T", "W", "T", "F", "S"];
+  String urgency = "NotUrgent";
   DateTime selectedDate = DateTime.now();
   CartController cartController = CartController();
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -95,24 +98,86 @@ class _CartState extends State<Cart> {
                     ),
                     title: regularText("My Cart", 3.0, Constants.primaryColor,
                         FontWeight.bold, 0),
+                    trailing: InkWell(
+                        onTap: () async {
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => PaymentScreen(),
+                          //     ));
+                          box.write('timeslot',
+                              "${selectedTime.hour}:${selectedTime.minute}");
+                          box.write('dateslot',
+                              "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}");
+                          print(box.read('address2'));
+
+                          if (box.read('address2') == null) {
+                            box.write('address2', box.read('address'));
+                            print(box.read('address2'));
+                          }
+                          ApiServices apiServices = ApiServices();
+                          if (controller.cart.call().cartItem.isNotEmpty) {
+                            await apiServices.postOrder(urgency);
+
+                            modalforCheckout(
+                                controller.cart
+                                    .call()
+                                    .getCartItemCount()
+                                    .toString(),
+                                prodController
+                                    .getCartTotalAmount()
+                                    .toStringAsFixed(2),
+                                box.read('orderid').toString());
+                          } else {
+                            print("not called");
+                            Fluttertoast.showToast(msg: 'First Order Please');
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.heightMultiplier * 1,
+                              horizontal: SizeConfig.heightMultiplier * 2),
+                          margin: EdgeInsets.only(
+                              right: SizeConfig.heightMultiplier * 1),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              // border: Border.all(
+                              //   color: Constants.primaryColor,
+                              //   width: 2,
+                              // ),
+                              color: Constants.primaryColor),
+                          child: regularText(
+                              "Order", 2.0, Colors.white, FontWeight.bold, 1),
+                        )),
                   ),
-                  regularText("Delivery Address", 1.9, Constants.grey,
-                      FontWeight.normal, 0),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GoogleSearchPlacesApi(),
-                          ));
-                    },
-                    child: regularText(
-                      box.read('address2').toString(),
-                      2.0,
-                      Constants.primaryColor,
-                      FontWeight.normal,
-                      0,
-                    ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: Icon(Icons.edit_location_alt_outlined)),
+                      Expanded(
+                        flex: 10,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GoogleSearchPlacesApi(),
+                                ));
+                          },
+                          child: regularText(
+                            (box.read('address2') == null)
+                                ? box.read('address').toString()
+                                : box.read('address2').toString(),
+                            2.0,
+                            Constants.primaryColor,
+                            FontWeight.normal,
+                            0,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   CarouselSlider.builder(
@@ -208,6 +273,7 @@ class _CartState extends State<Cart> {
                             onChanged: (SingingCharacter value) {
                               setState(() {
                                 _character = value;
+                                urgency = "NotUrgent";
                               });
                             },
                           ),
@@ -265,6 +331,7 @@ class _CartState extends State<Cart> {
                             onChanged: (SingingCharacter value) {
                               setState(() {
                                 _character = value;
+                                urgency = dropdownvalue;
                               });
                             },
                           ),
@@ -320,87 +387,132 @@ class _CartState extends State<Cart> {
                   spaces(),
                   GetBuilder<CartController>(
                     builder: (_) => ListView.builder(
-                      physics: ScrollPhysics(),
-                      itemCount: controller.cart.call().cartItem.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        minVerticalPadding: 0,
-                        leading: regularText((index + 1).toString(), 2.0,
-                            Constants.primaryColor, FontWeight.bold, 1),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
-                          onPressed: () {
-                            controller.cart.call().deleteItemFromCart(index);
-                            setState(() {});
-                          },
-                        ),
-                        title: regularText(
-                            controller.cart
-                                .call()
-                                .cartItem[index]
-                                .productName
-                                .toString(),
-                            2.0,
-                            Constants.primaryColor,
-                            FontWeight.bold,
-                            0),
-                        subtitle: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                regularText(
-                                    "Subtotal: ₹ " +
-                                        controller.cart
-                                            .call()
-                                            .cartItem[index]
-                                            .unitPrice
-                                            .toString(),
-                                    2.0,
-                                    Constants.grey,
-                                    FontWeight.bold,
-                                    0),
-                                regularText(
-                                    "Qty: " +
-                                        controller.cart
-                                            .call()
-                                            .cartItem[index]
-                                            .quantity
-                                            .toString(),
-                                    2.0,
-                                    Constants.grey,
-                                    FontWeight.bold,
-                                    0),
-                              ],
+                        physics: ScrollPhysics(),
+                        itemCount: controller.cart.call().cartItem.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final item = controller.cart
+                              .call()
+                              .cartItem[index]
+                              .productName;
+                          return Dismissible(
+                            // Each Dismissible must contain a Key. Keys allow Flutter to
+                            // uniquely identify widgets.
+                            key: Key(item),
+                            // Provide a function that tells the app
+                            // what to do after an item has been swiped away.
+                            onDismissed: (direction) {
+                              // Remove the item from the data source.
+                              controller.cart.call().deleteItemFromCart(index);
+                              setState(() {});
+                              // Then show a snackbar.
+                              Fluttertoast.showToast(msg: '$item dismissed');
+                            },
+                            child: ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              minVerticalPadding: 0,
+                              leading: regularText((index + 1).toString(), 2.0,
+                                  Constants.primaryColor, FontWeight.bold, 1),
+                              title: regularText(
+                                  controller.cart
+                                      .call()
+                                      .cartItem[index]
+                                      .productName
+                                      .toString(),
+                                  2.0,
+                                  Constants.primaryColor,
+                                  FontWeight.bold,
+                                  0),
+                              subtitle: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      regularText(
+                                          "Subtotal: ₹ " +
+                                              controller.cart
+                                                  .call()
+                                                  .cartItem[index]
+                                                  .unitPrice
+                                                  .toString(),
+                                          2.0,
+                                          Constants.grey,
+                                          FontWeight.normal,
+                                          0),
+                                      regularText(
+                                          "Qty: " +
+                                              controller.cart
+                                                  .call()
+                                                  .cartItem[index]
+                                                  .quantity
+                                                  .toString(),
+                                          2.0,
+                                          Constants.grey,
+                                          FontWeight.normal,
+                                          0),
+                                      IconButton(
+                                          onPressed: () {
+                                            var editItem;
+                                            for (var item
+                                                in prodController.prodList) {
+                                              if (item.productid.toString() ==
+                                                  controller.cart
+                                                      .call()
+                                                      .cartItem[index]
+                                                      .productId
+                                                      .toString()) {
+                                                setState(() {
+                                                  editItem = item;
+                                                });
+                                              }
+                                            }
+                                            if (box
+                                                    .read('cusType')
+                                                    .toString() ==
+                                                "Seller") {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProdDetailSeller(
+                                                      selProd: editItem,
+                                                    ),
+                                                  ));
+                                            } else {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProdDetail(
+                                                      selProd: editItem,
+                                                    ),
+                                                  ));
+                                            }
+                                            controller.cart
+                                                .call()
+                                                .deleteItemFromCart(index);
+                                          },
+                                          icon: Icon(Icons.edit)),
+                                    ],
+                                  ),
+                                  (controller.cart
+                                              .call()
+                                              .cartItem[index]
+                                              .uniqueCheck
+                                              .toString() !=
+                                          "")
+                                      ? showDaysTimeWeek(controller.cart
+                                          .call()
+                                          .cartItem[index]
+                                          .uniqueCheck
+                                          .toString())
+                                      : SizedBox(),
+                                ],
+                              ),
                             ),
-                            // regularText(
-                            //     controller.cart
-                            //         .call()
-                            //         .cartItem[index]
-                            //         .uniqueCheck
-                            //         .toString(),
-                            //     1.9,
-                            //     Colors.black,
-                            //     FontWeight.normal,
-                            //     0),
-                            (controller.cart
-                                        .call()
-                                        .cartItem[index]
-                                        .uniqueCheck
-                                        .toString() !=
-                                    "")
-                                ? showDaysTimeWeek(controller.cart
-                                    .call()
-                                    .cartItem[index]
-                                    .uniqueCheck
-                                    .toString())
-                                : SizedBox(),
-                          ],
-                        ),
-                        isThreeLine: true,
-                      ),
-                    ),
+                          );
+                        }),
                   ),
                   Divider(
                     color: Constants.grey,
@@ -429,25 +541,7 @@ class _CartState extends State<Cart> {
                     ),
                   ),
                   spaces(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.heightMultiplier * 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        regularText("Subtotal: ", 2.0, Constants.grey,
-                            FontWeight.bold, 0),
-                        regularText(
-                            "₹ " +
-                                (prodController.getCartTotalAmount())
-                                    .toString(),
-                            2.0,
-                            Constants.grey,
-                            FontWeight.bold,
-                            0),
-                      ],
-                    ),
-                  ),
+
                   spaces(),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -469,47 +563,6 @@ class _CartState extends State<Cart> {
                     ),
                   ),
                   spaces(),
-                  spaces(),
-                  InkWell(
-                      onTap: () async {
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PaymentScreen(),
-                        //     ));
-                        box.write('timeslot',
-                            "${selectedTime.hour}:${selectedTime.minute}");
-                        print(box.read('address2'));
-                        box.write('dateslot',
-                            "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}");
-
-                        ApiServices apiServices = ApiServices();
-                        await apiServices.postOrder();
-                        if (controller.cart.call().cartItem.isNotEmpty) {
-                          modalforCheckout(
-                              controller.cart
-                                  .call()
-                                  .getCartItemCount()
-                                  .toString(),
-                              prodController
-                                  .getCartTotalAmount()
-                                  .toStringAsFixed(2),
-                              box.read('orderid').toString());
-                        } else {
-                          print("not called");
-                          Fluttertoast.showToast(msg: 'First Order Please');
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.heightMultiplier * 1.5),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Constants.primaryColor),
-                        child: regularText(
-                            "Order Now", 2.0, Colors.white, FontWeight.bold, 1),
-                      )),
                 ],
               ),
             ),
@@ -565,34 +618,36 @@ class _CartState extends State<Cart> {
       children: [
         space1(),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < days.length; i++)
-              Container(
-                margin:
-                    EdgeInsets.only(right: SizeConfig.heightMultiplier * 0.02),
-                child: CircleAvatar(
-                  radius: SizeConfig.heightMultiplier * 1.5,
-                  backgroundColor: (trueDays[i] == false)
-                      ? Colors.white
-                      : Constants.primaryColor,
-                  child: regularText(
-                      days[i],
-                      1.4,
-                      (trueDays[i] == false)
-                          ? Constants.primaryColor
-                          : Colors.white,
-                      FontWeight.normal,
-                      1),
-                ),
-              ),
+            Row(
+              children: [
+                for (int i = 0; i < days.length; i++)
+                  Container(
+                    margin: EdgeInsets.only(
+                        right: SizeConfig.heightMultiplier * 0.02),
+                    child: CircleAvatar(
+                      radius: SizeConfig.heightMultiplier * 1.5,
+                      backgroundColor: (trueDays[i] == false)
+                          ? Colors.white
+                          : Constants.primaryColor,
+                      child: regularText(
+                          days[i],
+                          1.4,
+                          (trueDays[i] == false)
+                              ? Constants.primaryColor
+                              : Colors.white,
+                          FontWeight.normal,
+                          1),
+                    ),
+                  ),
+              ],
+            ),
+            regularText("For $value2 Week/s", 1.9, Constants.primaryColor,
+                FontWeight.normal, 0),
           ],
         ),
-        space1(),
-        // regularText("Timeslot: $value2", 2.0, Constants.primaryColor,
-        //     FontWeight.normal, 0),
-        space1(),
-        regularText("Total Week: $value2", 2.0, Constants.primaryColor,
-            FontWeight.normal, 0),
+        spaces(),
         Divider(
           color: Constants.grey,
           height: 1,

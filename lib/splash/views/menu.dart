@@ -84,12 +84,12 @@ class Menu extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: regularText(
-                      "9986768269", 2.2, Colors.white, FontWeight.bold, 0),
+                      "9986768269", 2.0, Colors.white, FontWeight.bold, 0),
                 ),
                 ListTile(
                   onTap: () {
                     launchUrl(
-                      Uri.parse("www.tompee.com"),
+                      Uri.parse("qpifoods.in"),
                       mode: LaunchMode.externalApplication,
                     );
                   },
@@ -98,7 +98,7 @@ class Menu extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: regularText(
-                      "www.tompee.com", 2.2, Colors.white, FontWeight.bold, 0),
+                      "qpifoods.in", 2.0, Colors.white, FontWeight.bold, 0),
                 ),
               ],
             )
