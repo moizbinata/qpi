@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qpi/components/components.dart';
 import 'package:qpi/controller/cart_controller.dart';
+import 'package:qpi/navigation/bottom_navigator.dart';
 import 'package:qpi/splash/views/cart.dart';
 import 'package:qpi/utils/constants.dart';
 import 'package:qpi/utils/size_config.dart';
@@ -79,7 +80,8 @@ class _ProdDetailState extends State<ProdDetail> {
 
                       await controller.cart.call().addToCart(
                             productId: int.tryParse(widget.selProd.productid),
-                            unitPrice: subtotalPrice,
+                            unitPrice: int.tryParse(widget.selProd.price),
+
                             // int.tryParse(widget.selProd.price),
 
                             quantity: totalProd,
@@ -299,9 +301,10 @@ class _ProdDetailState extends State<ProdDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             regularText(
-                                (_groupValue == 1)
-                                    ? "Select days"
-                                    : "THIS BOX IS DISABLED",
+                                "Select days",
+                                // (_groupValue == 1)
+                                //     ? "Select days"
+                                //     : "THIS BOX IS DISABLED",
                                 1.9,
                                 Constants.primaryColor,
                                 FontWeight.normal,
@@ -352,9 +355,10 @@ class _ProdDetailState extends State<ProdDetail> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 regularText(
-                                  (_groupValue == 1)
-                                      ? "Delivery Till"
-                                      : "DISABLED",
+                                  "Delivery Till",
+                                  // (_groupValue == 1)
+                                  //     ? "Delivery Till"
+                                  //     : "DISABLED",
                                   1.9,
                                   Constants.primaryColor,
                                   FontWeight.normal,

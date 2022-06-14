@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:qpi/controller/cart_controller.dart';
+import 'package:qpi/controller/history_controller.dart';
 import 'package:qpi/controller/login_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
 import 'package:qpi/splash/splash_screen.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
   // if (defaultTargetPlatform == TargetPlatform.android) {
   //   AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   // }
+  // git config --global --add safe.directory G:/Upwork/qpi
   runApp(MyApp());
 }
 
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   final CartController cartController = Get.put(CartController());
   final LoginController loginController = Get.put(LoginController());
+  final HistoryController historyController = Get.put(HistoryController());
 
   // This widget is the root of your application.
   @override
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
 
         return const GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'GBS',
+          title: 'QPI',
           home: SplashScreen(),
         );
       });

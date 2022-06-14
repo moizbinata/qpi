@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qpi/splash/views/cart.dart';
+import 'package:qpi/splash/views/history.dart';
 import 'package:qpi/splash/views/home.dart';
 import 'package:qpi/splash/views/menu.dart';
 import 'package:qpi/splash/views/products.dart';
@@ -42,6 +44,10 @@ class TabNavigator extends StatelessWidget {
       child = Menu(
         action: onBack,
       );
+    } else if (tabItem == "History") {
+      print(tabItem);
+
+      child = History();
     }
 
     return Navigator(

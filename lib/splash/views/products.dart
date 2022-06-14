@@ -17,7 +17,6 @@ class Products extends StatelessWidget {
   final action;
   Products({Key key, this.action}) : super(key: key);
   GetStorage box = GetStorage();
-  // String selCategory = "All";
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProductController());

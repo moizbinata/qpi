@@ -18,12 +18,19 @@ class BottomNavigator extends StatefulWidget {
 
 class _BottomNavigatorState extends State<BottomNavigator> {
   int _currentPage = 0;
-  List<String> pageKeys = ["Home", "Products", "Subscription", "Menu"];
+  List<String> pageKeys = [
+    "Home",
+    "Products",
+    "Subscription",
+    "Menu",
+    "History"
+  ];
   final Map<String, GlobalKey<NavigatorState>> _navigatorKeys = {
     "Home": GlobalKey<NavigatorState>(),
     "Products": GlobalKey<NavigatorState>(),
     "Subscription": GlobalKey<NavigatorState>(),
     "Menu": GlobalKey<NavigatorState>(),
+    "History": GlobalKey<NavigatorState>(),
   };
   final controller = Get.put(ProductController());
 
@@ -82,147 +89,169 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             _buildOffstageNavigator("Products"),
             _buildOffstageNavigator("Subscription"),
             _buildOffstageNavigator("Menu"),
+            _buildOffstageNavigator("History"),
           ],
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0.0,
           color: Colors.white,
           child: SizedBox(
+            width: SizeConfig.screenWidth,
             height: SizeConfig.heightMultiplier * 8,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.25,
-                  child: InkWell(
-                    onTap: () {
-                      controller.fetchProdList();
-                      _selectTab("Home", 0);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(0, (_currentPage == 0) ? -10 : 0),
-                          child: CircleAvatar(
-                            radius: SizeConfig.heightMultiplier * 2.5,
-                            backgroundColor: (_currentPage == 0)
-                                ? Constants.primaryColor
-                                : Colors.transparent,
-                            child: FaIcon(
-                              Icons.home_filled,
-                              color: (_currentPage == 0)
-                                  ? Colors.white
-                                  : Constants.primaryColor,
-                              size: (_currentPage == 0)
-                                  ? SizeConfig.textMultiplier * 3
-                                  : SizeConfig.textMultiplier * 3.5,
-                            ),
+                InkWell(
+                  onTap: () {
+                    controller.fetchProdList();
+                    _selectTab("Home", 0);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, (_currentPage == 0) ? -10 : 0),
+                        child: CircleAvatar(
+                          radius: SizeConfig.heightMultiplier * 2.5,
+                          backgroundColor: (_currentPage == 0)
+                              ? Constants.primaryColor
+                              : Colors.transparent,
+                          child: FaIcon(
+                            Icons.home_filled,
+                            color: (_currentPage == 0)
+                                ? Colors.white
+                                : Constants.primaryColor,
+                            size: (_currentPage == 0)
+                                ? SizeConfig.textMultiplier * 3
+                                : SizeConfig.textMultiplier * 3.5,
                           ),
                         ),
-                        regularText("Home", 1.8, Constants.primaryColor,
-                            FontWeight.normal, false),
-                      ],
-                    ),
+                      ),
+                      regularText("Home", 1.8, Constants.primaryColor,
+                          FontWeight.normal, false),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.25,
-                  child: InkWell(
-                    onTap: () {
-                      _selectTab("Products", 1);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(0, (_currentPage == 1) ? -10 : 0),
-                          child: CircleAvatar(
-                            radius: SizeConfig.heightMultiplier * 2.5,
-                            backgroundColor: (_currentPage == 1)
-                                ? Constants.primaryColor
-                                : Colors.transparent,
-                            child: FaIcon(
-                              FontAwesomeIcons.opencart,
-                              color: (_currentPage == 1)
-                                  ? Colors.white
-                                  : Constants.primaryColor,
-                              size: (_currentPage == 1)
-                                  ? SizeConfig.textMultiplier * 3
-                                  : SizeConfig.textMultiplier * 3.5,
-                            ),
+                InkWell(
+                  onTap: () {
+                    _selectTab("Products", 1);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, (_currentPage == 1) ? -10 : 0),
+                        child: CircleAvatar(
+                          radius: SizeConfig.heightMultiplier * 2.5,
+                          backgroundColor: (_currentPage == 1)
+                              ? Constants.primaryColor
+                              : Colors.transparent,
+                          child: FaIcon(
+                            FontAwesomeIcons.store,
+                            color: (_currentPage == 1)
+                                ? Colors.white
+                                : Constants.primaryColor,
+                            size: (_currentPage == 1)
+                                ? SizeConfig.textMultiplier * 3
+                                : SizeConfig.textMultiplier * 3.5,
                           ),
                         ),
-                        regularText("Products", 1.8, Constants.primaryColor,
-                            FontWeight.normal, false),
-                      ],
-                    ),
+                      ),
+                      regularText("Products", 1.8, Constants.primaryColor,
+                          FontWeight.normal, false),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.25,
-                  child: InkWell(
-                    onTap: () {
-                      _selectTab("Subscription", 2);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(0, (_currentPage == 2) ? -10 : 0),
-                          child: CircleAvatar(
-                            radius: SizeConfig.heightMultiplier * 2.5,
-                            backgroundColor: (_currentPage == 2)
-                                ? Constants.primaryColor
-                                : Colors.transparent,
-                            child: FaIcon(
-                              Icons.favorite,
-                              color: (_currentPage == 2)
-                                  ? Colors.white
-                                  : Constants.primaryColor,
-                              size: (_currentPage == 2)
-                                  ? SizeConfig.textMultiplier * 3
-                                  : SizeConfig.textMultiplier * 3.5,
-                            ),
+                // InkWell(
+                //   onTap: () {
+                //     _selectTab("Subscription", 2);
+                //   },
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Transform.translate(
+                //         offset: Offset(0, (_currentPage == 2) ? -10 : 0),
+                //         child: CircleAvatar(
+                //           radius: SizeConfig.heightMultiplier * 2.5,
+                //           backgroundColor: (_currentPage == 2)
+                //               ? Constants.primaryColor
+                //               : Colors.transparent,
+                //           child: FaIcon(
+                //             Icons.favorite,
+                //             color: (_currentPage == 2)
+                //                 ? Colors.white
+                //                 : Constants.primaryColor,
+                //             size: (_currentPage == 2)
+                //                 ? SizeConfig.textMultiplier * 3
+                //                 : SizeConfig.textMultiplier * 3.5,
+                //           ),
+                //         ),
+                //       ),
+                //       regularText("Subscription", 1.8, Constants.primaryColor,
+                //           FontWeight.normal, false),
+                //     ],
+                //   ),
+                // ),
+
+                InkWell(
+                  onTap: () {
+                    _selectTab("History", 4);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, (_currentPage == 4) ? -10 : 0),
+                        child: CircleAvatar(
+                          radius: SizeConfig.heightMultiplier * 2.5,
+                          backgroundColor: (_currentPage == 4)
+                              ? Constants.primaryColor
+                              : Colors.transparent,
+                          child: FaIcon(
+                            FontAwesomeIcons.history,
+                            color: (_currentPage == 4)
+                                ? Colors.white
+                                : Constants.primaryColor,
+                            size: (_currentPage == 4)
+                                ? SizeConfig.textMultiplier * 3
+                                : SizeConfig.textMultiplier * 3.5,
                           ),
                         ),
-                        regularText("Subscription", 1.8, Constants.primaryColor,
-                            FontWeight.normal, false),
-                      ],
-                    ),
+                      ),
+                      regularText("My Orders", 1.8, Constants.primaryColor,
+                          FontWeight.normal, false),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.25,
-                  child: InkWell(
-                    onTap: () {
-                      _selectTab("Menu", 3);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(0, (_currentPage == 3) ? -10 : 0),
-                          child: CircleAvatar(
-                            radius: SizeConfig.heightMultiplier * 2.5,
-                            backgroundColor: (_currentPage == 3)
-                                ? Constants.primaryColor
-                                : Colors.transparent,
-                            child: FaIcon(
-                              Icons.menu,
-                              color: (_currentPage == 3)
-                                  ? Colors.white
-                                  : Constants.primaryColor,
-                              size: (_currentPage == 3)
-                                  ? SizeConfig.textMultiplier * 3
-                                  : SizeConfig.textMultiplier * 3.5,
-                            ),
+                InkWell(
+                  onTap: () {
+                    _selectTab("Menu", 3);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, (_currentPage == 3) ? -10 : 0),
+                        child: CircleAvatar(
+                          radius: SizeConfig.heightMultiplier * 2.5,
+                          backgroundColor: (_currentPage == 3)
+                              ? Constants.primaryColor
+                              : Colors.transparent,
+                          child: FaIcon(
+                            Icons.menu,
+                            color: (_currentPage == 3)
+                                ? Colors.white
+                                : Constants.primaryColor,
+                            size: (_currentPage == 3)
+                                ? SizeConfig.textMultiplier * 3
+                                : SizeConfig.textMultiplier * 3.5,
                           ),
                         ),
-                        regularText("Menu", 1.8, Constants.primaryColor,
-                            FontWeight.normal, false),
-                      ],
-                    ),
+                      ),
+                      regularText("Menu", 1.8, Constants.primaryColor,
+                          FontWeight.normal, false),
+                    ],
                   ),
                 ),
               ],

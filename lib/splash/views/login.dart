@@ -93,7 +93,7 @@ class Login extends StatelessWidget {
                         }
                       },
                       child: regularText(
-                          "Login", 2.5, Colors.white, FontWeight.bold, 1),
+                          "Login", 2.2, Colors.white, FontWeight.bold, 1),
                     ),
                   ),
                 ),
@@ -101,7 +101,7 @@ class Login extends StatelessWidget {
                   height: SizeConfig.heightMultiplier * 1,
                 ),
                 regularText(
-                    "or", 2.5, Constants.darkBlue, FontWeight.normal, 1),
+                    "or", 2.2, Constants.darkBlue, FontWeight.normal, 1),
                 TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -111,7 +111,7 @@ class Login extends StatelessWidget {
                         ),
                       );
                     },
-                    child: regularText("Register here", 2.5, Constants.darkBlue,
+                    child: regularText("Register here", 2.2, Constants.darkBlue,
                         FontWeight.normal, 0))
               ],
             ),

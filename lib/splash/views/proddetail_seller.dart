@@ -99,7 +99,7 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
 
                       await controller.cart.call().addToCart(
                             productId: int.tryParse(widget.selProd.productid),
-                            unitPrice: totalPrice,
+                            unitPrice: int.tryParse(widget.selProd.price),
                             // int.tryParse(widget.selProd.price),
 
                             quantity: totalProd,
@@ -311,9 +311,10 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             regularText(
-                                (_groupValue == 1)
-                                    ? "Select days"
-                                    : "THIS BOX IS DISABLED",
+                                "Select days",
+                                // (_groupValue == 1)
+                                //     ? "Select days"
+                                //     : "THIS BOX IS DISABLED",
                                 1.9,
                                 Constants.primaryColor,
                                 FontWeight.normal,
@@ -368,9 +369,10 @@ class _ProdDetailSellerState extends State<ProdDetailSeller> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 regularText(
-                                  (_groupValue == 1)
-                                      ? "Delivery Till"
-                                      : "DISABLED",
+                                  // (_groupValue == 1)
+                                  //     ? "Delivery Till"
+                                  //     : "DISABLED",
+                                  "Delivery Till",
                                   1.9,
                                   Constants.primaryColor,
                                   FontWeight.normal,

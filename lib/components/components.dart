@@ -116,8 +116,8 @@ InputDecoration customImpDec(String hint) {
     contentPadding: EdgeInsets.symmetric(horizontal: 17, vertical: 15),
     hintText: hint,
     hintStyle: TextStyle(
-        color: Constants.primaryColor,
-        fontSize: SizeConfig.textMultiplier * 2.2,
+        color: Constants.grey,
+        fontSize: SizeConfig.textMultiplier * 2.0,
         fontWeight: FontWeight.w600),
     errorBorder: OutlineInputBorder(
       borderSide: BorderSide(color: Constants.primaryColor),

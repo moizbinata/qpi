@@ -7,8 +7,6 @@ import 'package:qpi/utils/services.dart';
 class ProductController extends GetxController {
   var loading = true.obs;
   // List<int> ecgList = [];
-  RxString ecgString = "".obs;
-  // RxList<ECGCord> ecgControllerList = [].obs;
   RxList<ProductModel> prodList = <ProductModel>[].obs;
   RxList<ProductModel> categprodList = <ProductModel>[].obs;
   RxList<String> categList = <String>[].obs;
@@ -42,7 +40,7 @@ class ProductController extends GetxController {
     FlutterCart cartItems = FlutterCart();
     double totalAmount = 0.0;
     for (var e in cartItems.cartItem) {
-      totalAmount += e.unitPrice;
+      totalAmount += e.subTotal;
     }
     return totalAmount;
   }

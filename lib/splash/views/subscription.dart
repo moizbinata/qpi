@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:qpi/components/components.dart';
 import 'package:qpi/controller/product_controller.dart';
+import 'package:qpi/splash/views/cart.dart';
 import 'package:qpi/splash/views/home.dart';
 import 'package:qpi/splash/views/proddetail_seller.dart';
 import 'package:qpi/utils/size_config.dart';
@@ -36,7 +37,13 @@ class Subscription extends StatelessWidget {
                 leading: regularText("Most Liked Products", 2.6,
                     Constants.primaryColor, FontWeight.bold, 0),
                 trailing: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Cart(),
+                        ));
+                  },
                   icon: FaIcon(
                     FontAwesomeIcons.opencart,
                     size: SizeConfig.heightMultiplier * 4,
