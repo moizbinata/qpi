@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ),
-                          child: Image.asset(
+                          child: Image.network(
                             Constants.banImgs[index],
                             fit: BoxFit.fill,
 

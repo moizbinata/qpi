@@ -12,13 +12,19 @@ class Constants {
   static final lightGrey = Color(0xfff7f5d2); //grey.shade400
   static final grey = Colors.grey.shade600; //grey.shade400
   static final List<String> banImgs = [
-    'assets/img/ban_1.jpeg',
-    // 'assets/img/ban_1.jpeg',
-    'assets/img/ban_2.jpeg',
-    'assets/img/ban_3.jpeg',
-    'assets/img/ban_4.jpeg',
-    'assets/img/ban_5.jpeg',
+    "http://qpifoods.com/mystore/banners/mainbanner/ban5.jpg",
+    "http://qpifoods.com/mystore/banners/mainbanner/ban6.jpg",
+    "http://qpifoods.com/mystore/banners/mainbanner/ban7.jpg",
+    "http://qpifoods.com/mystore/banners/mainbanner/ban9.jpg",
+    "http://qpifoods.com/mystore/banners/mainbanner/ban10.jpg",
+    "http://qpifoods.com/mystore/banners/mainbanner/ban11.jpg",
   ];
+  // 'assets/img/ban_1.jpeg',
+  // // 'assets/img/ban_1.jpeg',
+  // 'assets/img/ban_2.jpeg',
+  // 'assets/img/ban_3.jpeg',
+  // 'assets/img/ban_4.jpeg',
+  // 'assets/img/ban_5.jpeg',
   // static final requiredValidator =
   //     RequiredValidator(errorText: 'this field is required');
   static Widget loader() => Center(
