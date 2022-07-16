@@ -80,7 +80,13 @@ class _ProdDetailState extends State<ProdDetail> {
 
                       await controller.cart.call().addToCart(
                             productId: int.tryParse(widget.selProd.productid),
-                            unitPrice: int.tryParse(widget.selProd.price),
+                            unitPrice: (_groupValue == 0)
+                                ? (int.tryParse(widget.selProd.price))
+                                : (num_days > 1 || weeks > 1)
+                                    ? ((int.tryParse(widget.selProd.price)) *
+                                        (num_days * weeks))
+                                    : (int.tryParse(widget.selProd.price) *
+                                        totalProd),
 
                             // int.tryParse(widget.selProd.price),
 
@@ -260,7 +266,6 @@ class _ProdDetailState extends State<ProdDetail> {
                         )
                       ],
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -285,7 +290,6 @@ class _ProdDetailState extends State<ProdDetail> {
                       ],
                     ),
                     spaces(),
-
                     AbsorbPointer(
                       absorbing: (_groupValue == 0) ? true : false,
                       child: Container(
@@ -409,77 +413,6 @@ class _ProdDetailState extends State<ProdDetail> {
                       ),
                     ),
                     spaces(),
-                    // InkWell(
-                    //     onTap: () async {
-                    //       int subtotalPrice = 0;
-                    //       subtotalPrice = (_groupValue == 0)
-                    //           ? (int.tryParse(widget.selProd.price) * totalProd)
-                    //           : (num_days > 1 || weeks > 1)
-                    //               ? ((int.tryParse(widget.selProd.price) *
-                    //                       totalProd) *
-                    //                   (num_days * weeks))
-                    //               : (int.tryParse(widget.selProd.price) *
-                    //                   totalProd);
-
-                    //       await controller.cart.call().addToCart(
-                    //             productId:
-                    //                 int.tryParse(widget.selProd.productid),
-                    //             unitPrice: subtotalPrice,
-                    //             // int.tryParse(widget.selProd.price),
-
-                    //             quantity: totalProd,
-                    //             productDetailsObject: widget.selProd.category,
-                    //             productName: widget.selProd.servicename,
-                    //             uniqueCheck: (_groupValue == 0)
-                    //                 ? ""
-                    //                 : daysBool.toString() +
-                    //                     // "//" +
-                    //                     // timeslot +
-                    //                     "//" +
-                    //                     weeks.toString(),
-                    //           );
-                    //       print(daysBool.toString() +
-                    //           // "//" +
-                    //           // timeslot +
-                    //           "//" +
-                    //           weeks.toString());
-                    //       Navigator.pushReplacement(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //             builder: (context) => Cart(),
-                    //           ));
-                    //     },
-                    //     child: Container(
-                    //       padding: EdgeInsets.symmetric(
-                    //           vertical: SizeConfig.heightMultiplier * 1.5),
-                    //       width: double.infinity,
-                    //       decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.circular(20),
-                    //           // border: Border.all(
-                    //           //   color: Constants.primaryColor,
-                    //           //   width: 2,
-                    //           // ),
-                    //           color: Constants.primaryColor),
-                    //       child: regularText("Proceed to Order", 2.0,
-                    //           Colors.white, FontWeight.bold, 1),
-                    //     )
-                    //     ),
-                    // spaces(),
-                    // InkWell(
-                    //     child: Container(
-                    //   padding: EdgeInsets.symmetric(
-                    //       vertical: SizeConfig.heightMultiplier * 1.5),
-                    //   width: double.infinity,
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(20),
-                    //       border: Border.all(
-                    //         color: Constants.primaryColor,
-                    //         width: 2,
-                    //       ),
-                    //       color: Colors.white),
-                    //   child: regularText("Add to Subscription", 2.0,
-                    //       Constants.primaryColor, FontWeight.bold, 1),
-                    // )),
                   ],
                 ),
               ),

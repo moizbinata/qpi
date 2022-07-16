@@ -15,6 +15,7 @@ import 'package:qpi/paints/custompaint.dart';
 import 'package:qpi/splash/views/regUser.dart';
 import 'package:qpi/utils/constants.dart';
 import 'package:qpi/utils/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class Login extends StatelessWidget {
@@ -102,17 +103,31 @@ class Login extends StatelessWidget {
                 ),
                 regularText(
                     "or", 2.2, Constants.darkBlue, FontWeight.normal, 1),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserRegistration(),
-                        ),
-                      );
-                    },
-                    child: regularText("Register here", 2.2, Constants.darkBlue,
-                        FontWeight.normal, 0))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          launchUrl(
+                            Uri.parse("http://qpifoods.com/forgotpass.php"),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                        child: regularText("Forgot Password", 2.0,
+                            Constants.darkBlue, FontWeight.normal, 0)),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserRegistration(),
+                            ),
+                          );
+                        },
+                        child: regularText("Register here", 2.0,
+                            Constants.darkBlue, FontWeight.normal, 0)),
+                  ],
+                )
               ],
             ),
           ),

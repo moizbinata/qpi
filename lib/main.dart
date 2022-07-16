@@ -5,13 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:qpi/controller/cart_controller.dart';
-import 'package:qpi/controller/history_controller.dart';
 import 'package:qpi/controller/login_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
 import 'package:qpi/splash/splash_screen.dart';
 import 'package:qpi/utils/size_config.dart';
 
 Future<void> main() async {
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   // LicenseRegistry.addLicense(
   //   () async* {
   //     final license = await rootBundle.loadString('google_fonts/OFL.txt');
@@ -35,7 +36,6 @@ class MyApp extends StatelessWidget {
   final ProductController productController = Get.put(ProductController());
   final CartController cartController = Get.put(CartController());
   final LoginController loginController = Get.put(LoginController());
-  final HistoryController historyController = Get.put(HistoryController());
 
   // This widget is the root of your application.
   @override

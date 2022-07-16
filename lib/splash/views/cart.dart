@@ -143,7 +143,7 @@ class _CartState extends State<Cart> {
                             ),
                           ],
                         ),
-                        child: Image.asset(
+                        child: Image.network(
                           Constants.banImgs[index],
                           fit: BoxFit.fill,
 
@@ -161,7 +161,7 @@ class _CartState extends State<Cart> {
                   children: [
                     const Expanded(flex: 2, child: SizedBox()),
                     Expanded(
-                      flex: 8,
+                      flex: 6,
                       child: regularText(
                         "Delivery Date",
                         1.9,
@@ -171,7 +171,7 @@ class _CartState extends State<Cart> {
                       ),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 6,
                       child: InkWell(
                         onTap: () {
                           _selectDate(context);

@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:qpi/controller/cart_controller.dart';
 import 'package:qpi/controller/product_controller.dart';
-import 'package:qpi/model/history_model.dart';
 import 'package:qpi/model/order_model.dart';
 import 'package:qpi/model/product_mdel.dart';
 import 'package:qpi/splash/views/cart.dart';
@@ -20,20 +19,6 @@ class ApiServices {
       var jsonString = response.body;
       print(jsonString);
       return productModelFromJson(jsonString);
-    } else {
-      return null;
-    }
-  }
-
-  static Future<List<HistoryModel>> fetchHistory() async {
-    GetStorage box = GetStorage();
-    var response = await client.get(Uri.parse(
-        // http: //www.qpifoods.com/mystore/jatpat_get_custorders.php?mobile=9066545279
-        'http://www.qpifoods.com/mystore/jatpat_get_custorders.php?mobile=${box.read('mobile')}'));
-    if (response.statusCode == 200) {
-      var jsonString = response.body;
-      print(jsonString);
-      return historyModelFromJson(jsonString);
     } else {
       return null;
     }

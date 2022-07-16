@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:qpi/components/components.dart';
 import 'package:qpi/splash/views/login.dart';
+import 'package:qpi/splash/views/otp.dart';
 import 'package:qpi/utils/constants.dart';
 import 'package:qpi/utils/size_config.dart';
 
@@ -34,7 +35,7 @@ class _UserRegistrationState extends State<UserRegistration> {
     'Customer',
     'Seller',
   ];
-
+  String otp = "";
   final _formKey = GlobalKey<FormState>();
 
   FocusNode fn = FocusNode();
@@ -183,11 +184,26 @@ class _UserRegistrationState extends State<UserRegistration> {
                             primary: Constants.primaryColor,
                             padding: EdgeInsets.symmetric(
                                 vertical: SizeConfig.heightMultiplier * 1.8)),
-                        onPressed: () {
+                        onPressed: () async {
                           FocusScope.of(context).requestFocus(fn);
 
                           if (_formKey.currentState.validate()) {
-                            newRegister(context);
+                            // newRegister(context);
+                            await getOtp();
+                            print(otp);
+                            String apiurl =
+                                "${Constants.baseUrl}mystore/jatpat_register_newuser.php?username=${fnameContr.text.toString() + lnameContr.text.toString()}&firstname=${fnameContr.text}&mobile=${mobileContr.text}&email=${mailContr.text}&addr=${addressContr.text}&ctype=$custType&passwd=${pinContr.text}";
+                            print(apiurl);
+                            if (otp != "") {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OTP(
+                                      otp: otp,
+                                      url: apiurl,
+                                    ),
+                                  ));
+                            }
                           }
                         },
                         child: regularText(
@@ -204,25 +220,18 @@ class _UserRegistrationState extends State<UserRegistration> {
     );
   }
 
-  newRegister(context) async {
-    String apiurl =
-        "${Constants.baseUrl}mystore/jatpat_register_newuser.php?username=${fnameContr.text.toString() + lnameContr.text.toString()}&firstname=${fnameContr.text}&mobile=${mobileContr.text}&email=${mailContr.text}&addr=${addressContr.text}&ctype=$custType&passwd=${pinContr.text}";
+  getOtp() async {
+    String apiurl = "http://qpifoods.com/regotp.php";
     var response = await http.post(Uri.parse(apiurl));
+
     if (response.statusCode == 200) {
-      if (response.body.toLowerCase() == "wrong") {
-        Fluttertoast.showToast(msg: 'Already exists or something went wrong');
-      } else {
-        Fluttertoast.showToast(msg: 'Registered Successfully');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Login(),
-          ),
-        );
-      }
+      // print(response.body);
+      otp = response.body.toString().substring(7, 11);
+      // print(otp);
     } else {
       Fluttertoast.showToast(msg: 'Something went wrong, contact admin');
       throw Exception("Unable to perform request");
     }
+    return otp;
   }
 }
